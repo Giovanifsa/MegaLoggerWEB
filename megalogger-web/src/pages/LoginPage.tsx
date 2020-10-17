@@ -2,6 +2,9 @@ import React, { ChangeEvent } from 'react';
 import { Paper, TextField, Button } from '@material-ui/core';
 import { getLocaleDefinition } from "../servicing/translations/Translator";
 import Locale from '../servicing/translations/locale/Locale';
+import loginPageBG from '../images/loginPage/loginPageBG.jpg';
+import transparentEmblemKvK from '../images/loginPage/transparentEmblemKvK.png';
+import commonStyles from '../styling/CommonStyles';
 
 interface LoginPageProps {
     title: string;
@@ -38,33 +41,56 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
         let locale: Locale = getLocaleDefinition('PT_BR');
 
         return (
-            <Paper 
-                elevation={3}
-                style={{
-                    marginTop: '40vh',
-                    marginLeft: '30vw',
-                    marginRight: '30vw',
-                    textAlign: 'center',
-                    paddingTop: '5vh',
-                    paddingBottom: '5vh'
-                }}
-            >   
-                <form noValidate autoComplete="off">
-                    <div>
+            <div
+                style={
+                    commonStyles.getMaxSizeStyling({
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        minHeight: '100%',
+                        minWidth: '100%',
+                        backgroundImage: "url(" + loginPageBG + ")",
+                        backgroundSize: '100%'
+                    })
+                }
+                >
+                <Paper 
+                    elevation={3}
+                    style={{
+                        width: '30%',
+                        padding: '30px'
+                    }}
+                >   
+                    <form 
+                        noValidate 
+                        autoComplete="off"
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignContent: 'center',
+                            justifySelf: 'center',
+                            gap: '10px'
+                        }}
+                    >
+                        <img 
+                            src={transparentEmblemKvK} 
+                            alt="Teste"
+                            style={{
+                                width: '100%',
+                                height: '100%'
+                            }}
+                        />
+
                         <TextField 
                             id="outlined-basic" 
                             label={locale.loginUsername} 
                             variant="outlined"
                             value={this.state.loginUsername}
                             onChange={this.handleUsernameChange.bind(this)}
-                            style={{
-                                width: '75%',
-                                marginBottom: '10px'
-                            }}
                         />
-                    </div>
 
-                    <div>
                         <TextField 
                             id="outlined-basic"
                             type="password" 
@@ -72,26 +98,17 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
                             variant="outlined"
                             value={this.state.loginPassword}
                             onChange={this.handlePasswordChange.bind(this)}
-                            style={{
-                                width: '75%',
-                                marginBottom: '10px'
-                            }}
                         />
-                    </div>
 
-                    <div>
                         <Button 
                             variant="contained" 
                             color="primary"
-                            style={{
-                                width: '75%'
-                            }}
                         >
                             {locale.loginButton}
                         </Button>
-                    </div>
-                </form>
-            </Paper>
+                    </form>
+                </Paper>
+            </div>
         );
     }
 };
