@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppBar, IconButton, Typography } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons';
+// import MenuIcon from '@material-ui/icons';
 
 export default class Navbar extends React.Component {
     public render() : JSX.Element {

@@ -1,10 +1,11 @@
 import React, { ChangeEvent } from 'react';
 import { Paper, TextField, Button } from '@material-ui/core';
-import { getLocaleDefinition } from "../servicing/translations/Translator";
-import Locale from '../servicing/translations/locale/Locale';
-import loginPageBG from '../images/loginPage/loginPageBG.jpg';
-import transparentEmblemKvK from '../images/loginPage/transparentEmblemKvK.png';
-import commonStyles from '../styling/CommonStyles';
+import { getLocaleDefinition } from "../../translations/Translator";
+import Locale from '../../translations/locale/Locale';
+import loginPageBG from './images/loginPageBG.jpg';
+import transparentEmblemKvK from './images/transparentEmblemKvK.png';
+import commonStyles from '../../styling/CommonStyles';
+import contextManager from "../../servicing/ContextManager";
 
 interface LoginPageProps {
     title: string;
@@ -35,6 +36,10 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
         this.setState({
             loginPassword: event.target.value
         });
+    }
+
+    private handleLoginButtonClick() : void {
+        contextManager.login(this.state.loginUsername, this.state.loginPassword);
     }
 
     public render() : JSX.Element {
@@ -103,6 +108,7 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
                         <Button 
                             variant="contained" 
                             color="primary"
+                            onClick={this.handleLoginButtonClick.bind(this)}
                         >
                             {locale.loginButton}
                         </Button>

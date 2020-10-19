@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginPage from './LoginPage';
+import LoginPage from './loginPage/LoginPage';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 function App() {
