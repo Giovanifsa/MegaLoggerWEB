@@ -1,10 +1,11 @@
-import Locale from './Locale';
+import Locale, { LocalePhrase } from './Locale';
 
 class EN implements Locale {
-    localeName = "English";
-    loginUsername = 'Username';
-    loginPassword = "Password";
-    loginButton = "Login";
+    localeName = new LocalePhrase("English");
+    loginUsername = new LocalePhrase('Username');
+    loginPassword = new LocalePhrase("Password");
+    loginButton = new LocalePhrase("Login");
+    loginSuccess = new LocalePhrase("Login successful - Welcome {0}!");
 };
 
 export default new EN();

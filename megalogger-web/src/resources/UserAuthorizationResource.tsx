@@ -1,8 +1,7 @@
 import ArchitectureExceptionInformation from "./dto/ArchitectureExceptionInformation";
 import UserAuthorizationDTO from "./dto/UserAuthorizationDTO";
 import UserLoginBean from "./dto/UserLoginBean";
-import IResourceCallback from "./IResourceCallback";
-import RestResource from "./RestResource";
+import RestResource, {IResourceCallback} from "./RestResource";
 
 class UserAuthorizationResource extends RestResource {
     protected baseURL: string = this.getBaseURL() + "/systemuserauthorization";

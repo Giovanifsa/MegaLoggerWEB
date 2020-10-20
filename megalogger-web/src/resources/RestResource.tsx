@@ -1,5 +1,9 @@
 import DTO from "./dto/DTO";
-import IResourceCallback from "./IResourceCallback";
+
+export interface IResourceCallback<SO, EO> {
+    onError(errorObject: EO) : void;
+    onSuccess(successObject: SO) : void;
+}
 
 export default class RestResource {
     protected POST(url: string, payload: DTO, callback: IResourceCallback<any, any>) : void {

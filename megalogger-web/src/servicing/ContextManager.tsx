@@ -2,25 +2,32 @@ import ArchitectureExceptionInformation from "../resources/dto/ArchitectureExcep
 import UserAuthorizationDTO from "../resources/dto/UserAuthorizationDTO";
 import UserLoginBean from "../resources/dto/UserLoginBean";
 import userAuthorizationResource from "../resources/UserAuthorizationResource";
+import routeManager, { RouteEnum } from "./RouteManager";
+import {IResourceCallback} from "../resources/RestResource";
+
+export interface LoginInfo {
+    userName : string;
+    password: string;
+    callback?: IResourceCallback<UserAuthorizationDTO, ArchitectureExceptionInformation>;
+};
 
 class ContextManager {
-    public login(userName : string, password: string) : void {
-        console.log("teste");
-
-        let loginData = new UserLoginBean(userName, password);
+    public login(loginInfo: LoginInfo) : void {
+        let loginData = new UserLoginBean(loginInfo.userName, loginInfo.password);
 
         userAuthorizationResource.login(loginData, {
-            onError: this.loginError,
-            onSuccess: this.loginSuccess
+            onError: (error: ArchitectureExceptionInformation) => {
+                loginInfo.callback?.onError(error);
+            },
+            onSuccess: (success: UserAuthorizationDTO) => {
+                this.loginSuccess(success);
+                loginInfo.callback?.onSuccess(success);
+            }
         });
     }
 
-    private loginError(error: ArchitectureExceptionInformation) {
-        console.log("Oporra!!!" + error.message);
-    }
-
     private loginSuccess(success: UserAuthorizationDTO) {
-        console.log("Logou!!!" + success.authorization);
+        routeManager.changeRoute(RouteEnum.principal);
     }
 };
 

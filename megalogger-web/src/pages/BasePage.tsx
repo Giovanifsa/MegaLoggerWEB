@@ -1,13 +1,31 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
-import { Container } from '@material-ui/core';
+import FixedSnackbar, { SnackbarControl } from "../components/FixedSnackbar";
+import commonStyles from "../styling/CommonStyles";
 
-export default class BasePage extends React.Component {
+interface BasePageProps {
+    children: JSX.Element
+    setSnackbarControl?(controller: SnackbarControl) : void;
+}
+
+export default class BasePage extends React.Component<BasePageProps> {
     public render() : JSX.Element {
         return (
-            <Container>
-                <Navbar />
-            </Container>
+            <div 
+                style={commonStyles.getMaxSizeStyling()}
+            >
+                <FixedSnackbar 
+                    setSnackbarControl={this.setSnackbarControl.bind(this)} 
+                    snackbarTimeout={5000}
+                />
+
+                {this.props.children}
+            </div>
         );
+    }
+
+    private setSnackbarControl(controller: SnackbarControl) : void {
+        if (this.props.setSnackbarControl) {
+            this.props.setSnackbarControl(controller);
+        }
     }
 }
