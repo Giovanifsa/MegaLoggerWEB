@@ -22,4 +22,6 @@ export default interface Locale {
     loginPassword: LocalePhrase;
     loginButton: LocalePhrase;
     loginSuccess: LocalePhrase;
+    myAccount: LocalePhrase;
+    endSession: LocalePhrase;
 };

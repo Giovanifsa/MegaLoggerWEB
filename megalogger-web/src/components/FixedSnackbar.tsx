@@ -3,7 +3,7 @@ import Snackbar, { SnackbarOrigin } from "@material-ui/core/Snackbar";
 import Alert, { Color } from "@material-ui/lab/Alert";
 
 interface FixedSnackbarProps {
-    setSnackbarControl(controller: SnackbarControl): void;
+    setSnackbarController(controller: SnackbarController): void;
     snackbarTimeout?: number;
 };
 
@@ -14,7 +14,7 @@ interface FixedSnackbarState {
     severityColor: Color
 };
 
-export interface SnackbarControl {
+export interface SnackbarController {
     displaySnackbar(message: string, anchorOrigin: SnackbarOrigin, severityColor: Color) : void;
     displayTopRightCornerSuccess(message: string) : void;
     displayTopRightCornerError(message: string) : void;
@@ -31,13 +31,13 @@ export default class FixedSnackbar extends React.Component<FixedSnackbarProps, F
             severityColor: "warning"
         };
 
-        let controller: SnackbarControl = {
+        let controller: SnackbarController = {
             displaySnackbar: this.displaySnackbar.bind(this),
             displayTopRightCornerSuccess: this.displayTopRightCornerSuccess.bind(this),
             displayTopRightCornerError: this.displayTopRightCornerError.bind(this)
         };
 
-        props.setSnackbarControl(controller);
+        props.setSnackbarController(controller);
     }
     
     public render() : JSX.Element {

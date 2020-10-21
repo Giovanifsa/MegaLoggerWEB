@@ -4,6 +4,9 @@ import UserLoginBean from "../resources/dto/UserLoginBean";
 import userAuthorizationResource from "../resources/UserAuthorizationResource";
 import routeManager, { RouteEnum } from "./RouteManager";
 import {IResourceCallback} from "../resources/RestResource";
+import UserDTO from "../resources/dto/UserDTO";
+import Locale from "../translations/locale/Locale";
+import { getLocaleDefinition } from "../translations/Translator";
 
 export interface LoginInfo {
     userName : string;
@@ -12,6 +15,13 @@ export interface LoginInfo {
 };
 
 class ContextManager {
+    public currentUser?: UserDTO;
+    public currentLocale: Locale;
+
+    constructor() {
+        this.currentLocale = getLocaleDefinition("PT_BR");
+    }
+
     public login(loginInfo: LoginInfo) : void {
         let loginData = new UserLoginBean(loginInfo.userName, loginInfo.password);
 
@@ -27,7 +37,9 @@ class ContextManager {
     }
 
     private loginSuccess(success: UserAuthorizationDTO) {
-        routeManager.changeRoute(RouteEnum.principal);
+        this.currentUser = success.user;
+
+        //routeManager.changeRoute(RouteEnum.principal);
     }
 };
 

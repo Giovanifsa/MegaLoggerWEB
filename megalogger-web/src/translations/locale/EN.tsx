@@ -6,6 +6,8 @@ class EN implements Locale {
     loginPassword = new LocalePhrase("Password");
     loginButton = new LocalePhrase("Login");
     loginSuccess = new LocalePhrase("Login successful - Welcome {0}!");
+    myAccount = new LocalePhrase("My Account - {0}");
+    endSession = new LocalePhrase("End Session")
 };
 
 export default new EN();

@@ -1,13 +1,10 @@
 import React, { ChangeEvent } from 'react';
 import { Paper, TextField, Button } from '@material-ui/core';
-import { getLocaleDefinition } from "../../translations/Translator";
-import Locale from '../../translations/locale/Locale';
 import loginPageBG from './images/loginPageBG.png';
-import transparentEmblemKvK from './images/transparentEmblemKvK.png';
+import completeEmblem from './images/completeEmblem.png';
 import commonStyles from '../../styling/CommonStyles';
 import contextManager from "../../servicing/ContextManager";
-import BasePage from "../BasePage";
-import { SnackbarControl } from "../../components/FixedSnackbar";
+import BasePage, { BasePageController } from "../BasePage";
 import ArchitectureExceptionInformation from "../../resources/dto/ArchitectureExceptionInformation";
 import UserAuthorizationDTO from "../../resources/dto/UserAuthorizationDTO";
 
@@ -21,8 +18,7 @@ interface LoginPageState {
 }
 
 export default class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
-    private snackbarController?: SnackbarControl;
-    private locale: Locale;
+    private basePageController?: BasePageController;
 
     constructor(props: LoginPageProps) {
         super(props);
@@ -31,8 +27,6 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
             loginUsername: "",
             loginPassword: ""
         };
-
-        this.locale = getLocaleDefinition('PT_BR');
     }
 
     private handleUsernameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -48,11 +42,15 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
     }
 
     private handleLoginSuccess(success: UserAuthorizationDTO) : void {
-        this.snackbarController?.displayTopRightCornerSuccess(this.locale.loginSuccess.getPhrase(success.user.name));
+        this.basePageController?.setLoginState(true);
+
+        this.basePageController?.snackbarController?.displayTopRightCornerSuccess(
+            contextManager.currentLocale.loginSuccess.getPhrase(success.user.name)
+        );
     }
 
     private handleLoginError(error: ArchitectureExceptionInformation) : void {
-        this.snackbarController?.displayTopRightCornerError(error.message);
+        this.basePageController?.snackbarController?.displayTopRightCornerError(error.message);
     }
 
     private handleLoginButtonClick() : void {
@@ -66,60 +64,79 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
         });
     }
 
-    private setSnackbarControl(controller: SnackbarControl) : void {
-        this.snackbarController = controller;
+    private setBasePageController(controller: BasePageController) : void {
+        this.basePageController = controller;
+    }
+
+    private getMainDivStyle() : React.CSSProperties {
+        return commonStyles.getMaxSizeStyling({
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundImage: "url(" + loginPageBG + ")",
+            backgroundSize: '100%'
+        });
+    }
+
+    private getEmblemStyle() : React.CSSProperties {
+        return {
+            height: 'auto',
+            width: '20%'
+        };
+    }
+
+    private getPaperStyle() : React.CSSProperties {
+        return {
+            width: '30%',
+            padding: '30px',
+            marginBottom: '13%',
+            backgroundColor: 'GrayText'
+        };
+    }
+
+    private getLoginFormStyle() : React.CSSProperties {
+        return {
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignContent: 'center',
+            justifySelf: 'center',
+            gap: '10px'
+        };
+    }
+
+    private getLoginButtonStyle() : React.CSSProperties {
+        return {
+            backgroundColor: 'ButtonShadow'
+        };
     }
 
     public render() : JSX.Element {
         return (
             <BasePage
-                setSnackbarControl={this.setSnackbarControl.bind(this)}
+                setBasePageController={this.setBasePageController.bind(this)}
             >
                 <div
-                    style={
-                        commonStyles.getMaxSizeStyling({
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            backgroundImage: "url(" + loginPageBG + ")",
-                            backgroundSize: '100%'
-                        })
-                    }
+                    style={this.getMainDivStyle()}
                 >
                     <img 
-                        src={transparentEmblemKvK} 
+                        src={completeEmblem} 
                         alt="Login emblem"
-                        style={{
-                            height: 'auto',
-                            width: '20%'
-                        }}
+                        style={this.getEmblemStyle()}
                     />
 
                     <Paper 
                         elevation={3}
-                        style={{
-                            width: '30%',
-                            padding: '30px',
-                            marginBottom: '15%',
-                            backgroundColor: 'GrayText'
-                        }}
+                        style={this.getPaperStyle()}
                     >   
                         <form 
                             noValidate 
                             autoComplete="off"
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignContent: 'center',
-                                justifySelf: 'center',
-                                gap: '10px'
-                            }}
+                            style={this.getLoginFormStyle()}
                         >
-
                             <TextField 
-                                label={this.locale.loginUsername.getPhrase()} 
+                                label={contextManager.currentLocale.loginUsername.getPhrase()} 
                                 variant="outlined"
                                 value={this.state.loginUsername}
                                 onChange={this.handleUsernameChange.bind(this)}
@@ -127,7 +144,7 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
 
                             <TextField 
                                 type="password" 
-                                label={this.locale.loginPassword.getPhrase()} 
+                                label={contextManager.currentLocale.loginPassword.getPhrase()} 
                                 variant="outlined"
                                 value={this.state.loginPassword}
                                 onChange={this.handlePasswordChange.bind(this)}
@@ -136,11 +153,9 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
                             <Button 
                                 variant="contained" 
                                 onClick={this.handleLoginButtonClick.bind(this)}
-                                style={{
-                                    backgroundColor: 'ButtonShadow'
-                                }}
+                                style={this.getLoginButtonStyle()}
                             >
-                                {this.locale.loginButton.getPhrase()}
+                                {contextManager.currentLocale.loginButton.getPhrase()}
                             </Button>
                         </form>
                     </Paper>
