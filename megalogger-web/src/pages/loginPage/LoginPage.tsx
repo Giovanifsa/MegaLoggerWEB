@@ -7,6 +7,8 @@ import contextManager from "../../servicing/ContextManager";
 import BasePage, { BasePageController } from "../BasePage";
 import ArchitectureExceptionInformation from "../../resources/dto/ArchitectureExceptionInformation";
 import UserAuthorizationDTO from "../../resources/dto/UserAuthorizationDTO";
+import ResourceCallButton from "../../components/ResourceCallButton";
+import IActionCallback from "../../common/IActionCallback";
 
 interface LoginPageProps {
     title: string;
@@ -15,6 +17,7 @@ interface LoginPageProps {
 interface LoginPageState {
     loginUsername: string;
     loginPassword: string;
+    callingLoginResource: boolean
 }
 
 export default class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
@@ -25,7 +28,8 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
 
         this.state = {
             loginUsername: "",
-            loginPassword: ""
+            loginPassword: "",
+            callingLoginResource: false
         };
     }
 
@@ -42,6 +46,7 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
     }
 
     private handleLoginSuccess(success: UserAuthorizationDTO) : void {
+        this.setCallingLoginResourceState(false);
         this.basePageController?.setLoginState(true);
 
         this.basePageController?.snackbarController?.displayTopRightCornerSuccess(
@@ -50,17 +55,25 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
     }
 
     private handleLoginError(error: ArchitectureExceptionInformation) : void {
+        this.setCallingLoginResourceState(false);
+        this.basePageController?.setLoginState(false);
+
         this.basePageController?.snackbarController?.displayTopRightCornerError(error.message);
     }
 
-    private handleLoginButtonClick() : void {
+    private handleLoginButtonClick(passCallback: IActionCallback<any, any>) : void {
+        this.setCallingLoginResourceState(true);
+
         contextManager.login({
             userName: this.state.loginUsername,
             password: this.state.loginPassword,
-            callback: {
-                onSuccess: this.handleLoginSuccess.bind(this),
-                onError: this.handleLoginError.bind(this)
-            }
+            callback: passCallback
+        });
+    }
+
+    private setCallingLoginResourceState(callingLoginResourceState: boolean) : void {
+        this.setState({
+            callingLoginResource: callingLoginResourceState
         });
     }
 
@@ -107,9 +120,13 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
     }
 
     private getLoginButtonStyle() : React.CSSProperties {
-        return {
+        return commonStyles.getMaxWidthStyling({
             backgroundColor: 'ButtonShadow'
-        };
+        });
+    }
+
+    private getLoginButtonContainerStyle() : React.CSSProperties {
+        return commonStyles.getMaxWidthStyling();
     }
 
     public render() : JSX.Element {
@@ -140,6 +157,7 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
                                 variant="outlined"
                                 value={this.state.loginUsername}
                                 onChange={this.handleUsernameChange.bind(this)}
+                                disabled={this.state.callingLoginResource}
                             />
 
                             <TextField 
@@ -148,15 +166,21 @@ export default class LoginPage extends React.Component<LoginPageProps, LoginPage
                                 variant="outlined"
                                 value={this.state.loginPassword}
                                 onChange={this.handlePasswordChange.bind(this)}
+                                disabled={this.state.callingLoginResource}
                             />
 
-                            <Button 
+                            <ResourceCallButton 
                                 variant="contained" 
-                                onClick={this.handleLoginButtonClick.bind(this)}
-                                style={this.getLoginButtonStyle()}
+                                onClickCallResource={this.handleLoginButtonClick.bind(this)}
+                                buttonStyle={this.getLoginButtonStyle()}
+                                style={this.getLoginButtonContainerStyle()}
+                                callback={{
+                                    onSuccess: this.handleLoginSuccess.bind(this),
+                                    onError: this.handleLoginError.bind(this)
+                                }}
                             >
                                 {contextManager.currentLocale.loginButton.getPhrase()}
-                            </Button>
+                            </ResourceCallButton>
                         </form>
                     </Paper>
                 </div>

@@ -3,15 +3,15 @@ import UserAuthorizationDTO from "../resources/dto/UserAuthorizationDTO";
 import UserLoginBean from "../resources/dto/UserLoginBean";
 import userAuthorizationResource from "../resources/UserAuthorizationResource";
 import routeManager, { RouteEnum } from "./RouteManager";
-import {IResourceCallback} from "../resources/RestResource";
 import UserDTO from "../resources/dto/UserDTO";
 import Locale from "../translations/locale/Locale";
 import { getLocaleDefinition } from "../translations/Translator";
+import IActionCallback from "../common/IActionCallback";
 
 export interface LoginInfo {
     userName : string;
     password: string;
-    callback?: IResourceCallback<UserAuthorizationDTO, ArchitectureExceptionInformation>;
+    callback?: IActionCallback<UserAuthorizationDTO, ArchitectureExceptionInformation>;
 };
 
 class ContextManager {

@@ -5,6 +5,7 @@ import Alert, { Color } from "@material-ui/lab/Alert";
 interface FixedSnackbarProps {
     setSnackbarController(controller: SnackbarController): void;
     snackbarTimeout?: number;
+    marginTopPercentage?: number
 };
 
 interface FixedSnackbarState {
@@ -39,25 +40,6 @@ export default class FixedSnackbar extends React.Component<FixedSnackbarProps, F
 
         props.setSnackbarController(controller);
     }
-    
-    public render() : JSX.Element {
-        return (
-            <Snackbar
-                anchorOrigin={this.state.anchorOrigin}
-                open={this.state.open}
-                onClose={this.handleSnackbarClose.bind(this)}
-                key={this.state.anchorOrigin.horizontal + this.state.anchorOrigin.vertical}
-                autoHideDuration={this.props.snackbarTimeout || 5000}
-            >
-                <Alert 
-                    onChange={this.handleSnackbarClose.bind(this)}
-                    severity={this.state.severityColor}
-                >
-                    {this.state.message}
-                </Alert>
-            </Snackbar>
-        );
-    }
 
     private handleSnackbarClose() {
         this.setState({
@@ -86,6 +68,36 @@ export default class FixedSnackbar extends React.Component<FixedSnackbarProps, F
             vertical: 'top',
             horizontal: "right"
         }, "error");
+    }
+
+    private getSnackbarStyle() : React.CSSProperties {
+        let styles: React.CSSProperties = {};
+
+        if (this.props.marginTopPercentage) {
+            styles.marginTop = this.props.marginTopPercentage + "%";
+        }
+
+        return styles;
+    }
+    
+    public render() : JSX.Element {
+        return (
+            <Snackbar
+                anchorOrigin={this.state.anchorOrigin}
+                open={this.state.open}
+                onClose={this.handleSnackbarClose.bind(this)}
+                key={this.state.anchorOrigin.horizontal + this.state.anchorOrigin.vertical}
+                autoHideDuration={this.props.snackbarTimeout || 5000}
+                style={this.getSnackbarStyle()}
+            >
+                <Alert 
+                    onClose={this.handleSnackbarClose.bind(this)}
+                    severity={this.state.severityColor}
+                >
+                    {this.state.message}
+                </Alert>
+            </Snackbar>
+        );
     }
 };
 

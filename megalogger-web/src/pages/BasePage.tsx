@@ -1,13 +1,8 @@
 import React from 'react';
 import FixedSnackbar, { SnackbarController } from "../components/FixedSnackbar";
 import commonStyles from "../styling/CommonStyles";
-import { AppBar, Toolbar, IconButton, /*Typography, InputBase, Badge,*/ Menu, MenuItem } from "@material-ui/core";
-// import SearchIcon from '@material-ui/icons/Search';
-// import MenuIcon from '@material-ui/icons/Menu';
+import { AppBar, Toolbar, IconButton, Menu, MenuItem } from "@material-ui/core";
 import AccountCircle from '@material-ui/icons/AccountCircle';
-// import MailIcon from '@material-ui/icons/Mail';
-// import NotificationsIcon from '@material-ui/icons/Notifications';
-// import { fade, makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import contextManager from "../servicing/ContextManager";
 
 interface BasePageProps {
@@ -75,6 +70,29 @@ export default class BasePage extends React.Component<BasePageProps, BasePageSta
         });
     }
 
+    private getAppBarStyle() : React.CSSProperties {
+        return {
+            display: 'flex',
+            flexDirection: 'row',
+        };
+    }
+
+    private getLeftSideAppBarComponentsStyle() : React.CSSProperties {
+        return {
+            flexGrow: 1
+        };
+    }
+
+    private renderIfLoggedIn() : React.CSSProperties {
+        if (this.state.loggedIn) {
+            return {};
+        }
+
+        return {
+            display: "none"
+        }
+    }
+
     public render() : JSX.Element {
         return (
             <div 
@@ -83,18 +101,27 @@ export default class BasePage extends React.Component<BasePageProps, BasePageSta
                 <FixedSnackbar 
                     setSnackbarController={this.setSnackbarController.bind(this)} 
                     snackbarTimeout={5000}
+                    marginTopPercentage={2.5}
                 />
 
                 <AppBar position="static">
                     <Toolbar
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'left',
-                            alignContent: 'left',
-                            justifySelf: 'left'
-                        }}
+                        style={this.getAppBarStyle()}
                     >
+                        <div 
+                            style={this.getLeftSideAppBarComponentsStyle()}
+                        >
+                            <IconButton
+                                edge="end"
+                                aria-label={contextManager.currentUser?.name}
+                                aria-controls='primary-search-account-menu'
+                                aria-haspopup="true"
+                                onClick={this.handleAccountButtonClick.bind(this)}
+                                color="inherit"
+                            >
+                                <AccountCircle />
+                            </IconButton>
+                        </div>
 
                         <IconButton
                             edge="end"
@@ -103,6 +130,7 @@ export default class BasePage extends React.Component<BasePageProps, BasePageSta
                             aria-haspopup="true"
                             onClick={this.handleAccountButtonClick.bind(this)}
                             color="inherit"
+                            style={this.renderIfLoggedIn()}
                         >
                             <AccountCircle />
                         </IconButton>

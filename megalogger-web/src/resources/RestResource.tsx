@@ -1,12 +1,8 @@
+import IActionCallback from "../common/IActionCallback";
 import DTO from "./dto/DTO";
 
-export interface IResourceCallback<SO, EO> {
-    onError(errorObject: EO) : void;
-    onSuccess(successObject: SO) : void;
-}
-
 export default class RestResource {
-    protected POST(url: string, payload: DTO, callback: IResourceCallback<any, any>) : void {
+    protected POST(url: string, payload: DTO, callback: IActionCallback<any, any>) : void {
         let requestInit = this.createRequestInit("POST", payload);
         
         let request = new Request(url, requestInit);
